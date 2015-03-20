@@ -34,17 +34,34 @@ io.sockets.on('connection', function(socket) {
 });
 */
 io.sockets.on('connection', function (socket) {
-	clients.push(socket);
-	for (i=0; i<clients.length; i++) {
-		if(clients[i] == socket) 
-		{
-			console.log('Debug:', clients.length, socket.id);
+	
+	
+	clients.push(socket);			//aktív kapcsolatok karbantartásához
+	console.log('Connected user is:', clients.length);
+	io.sockets.emit('info', { msg: Math.floor((Math.random() * 100) + 1 )});  //ezzel tudom az összes socketnek ugyanazt kiküldeni
+	
+	
+	/****** ha csak az adott socketnek szeretnem:
+	socket.emit('info', { msg: Math.floor((Math.random() * 100) + 1 )});
+	*******/
+	
+	socket.on('getcity', function(data)
+	{
+		//socket.emit('torefresh', { msg: "reggeli"});
+		console.log(data);
+	});
+	
+	  socket.on('disconnect', function () {
+	  	for (i=0; i<clients.length; i++) {
+		if(clients[i].id == socket.id) 
+			{
+			clients.splice(i,1);				//kapcsolatot bontott socket törlése a listából
+			}
 		}
-	//	if (is_client == 0) { clients.push(socket);}
-	//	is_client = 0;
+		io.emit('user disconnected');
 
-	}
-    console.log('Connected user is:', clients.length);
-    socket.emit('info', { msg: Math.floor((Math.random() * 100) + 1 )});
+	  });
+	
+
 
 });

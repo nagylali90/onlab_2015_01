@@ -7,9 +7,36 @@
 		
 		
 		
-	<script>
+
 	
-		var socket = io.connect();
+	
+	
+  </head>
+  <body>
+    
+    <div>This is our socket.html file <br>
+	The generated random number is:<p id= "test" style="color:blue;font-weight:bold"></p></div>
+
+<div id="container" style="width:100%; height:400px;"></div>
+
+<form id="sending">
+Sending message:
+<input type="text" id="message"></input>
+<input type="submit" ></input>
+
+</form> 
+
+
+	<script>
+
+		/*$(document).ready(function() {
+			$("#frissit").click(function(){
+				refreshing();
+		}); 
+		});*/
+
+		
+		var socket = io();
 		socket.on('info', function (data) {
 		console.log(data.msg);
 		var tmp =document.getElementById('test');
@@ -17,6 +44,26 @@
 		tmp.innerHTML = number;
 		document.getElementById('test').value = number;
 		});
+		
+/*		function refreshing()
+		{
+		window.alert("");
+		socket.on('torefresh', function (data2) 
+		{
+			socket.emit("torefresh", {hali: 'Lali'})
+	
+		});
+		
+}*/
+
+		$("#sending").submit(function(e)
+		{
+		socket.emit("getcity", $("#message").val());
+		//alert("valami");
+		});
+		
+
+
 
 		
 	$(document).ready(function() {
@@ -47,16 +94,6 @@
  setTimeout(diagram, 50)
 	});
 	</script>
-	
-	
-	
-  </head>
-  <body>
-    
-    <div>This is our socket.html file <br>
-	The generated random number is:<p id= "test" style="color:blue;font-weight:bold"></p></div>
-
-<div id="container" style="width:100%; height:400px;"></div>
 
 
 
