@@ -3,12 +3,12 @@
 		<script src="/socket.io/socket.io.js"></script>
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-		
-		
-		
+  <!--	
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+  -->
 
-	
+   <script src="../../../../line_chart.js"></script>
+  
 	
 	
   </head>
@@ -18,6 +18,9 @@
 	The generated random number is:<p id= "test" style="color:blue;font-weight:bold"></p></div>
 
 <div id="container" style="width:100%; height:400px;"></div>
+
+  <div id="linechart_material"></div>
+
 
 <form id="sending">
 Sending message:
@@ -65,9 +68,9 @@ Sending message:
 
 
 
-		
-	$(document).ready(function() {
 	
+	$(document).ready(function() {
+/*	
 	function diagram() { 
 //	alert(($("#test").text()));
     $('#container').highcharts({
@@ -91,8 +94,10 @@ Sending message:
         }]
     });
 }
- setTimeout(diagram, 50)
-	});
+setTimeout(diagram, 50)*/
+ 
+ 
+});
 	</script>
 
 
