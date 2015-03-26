@@ -1,5 +1,4 @@
 
-  <script type="text/javascript">
   
   
     google.load('visualization', '1.1', {packages: ['line']});
@@ -23,7 +22,7 @@
         [7,   7.6 ],
         [8,  12.3 ],
         [9,  16.9 ],
-        [10, 12.8 ],
+        [10, 12.8 ]
 
       ]);
 
@@ -40,4 +39,3 @@
 
       chart.draw(data, options);
     }
-  </script>
