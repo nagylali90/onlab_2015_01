@@ -1,6 +1,5 @@
 
-  <script type="text/javascript">
-  
+
   
     google.load('visualization', '1.1', {packages: ['line']});
     google.setOnLoadCallback(drawChart);
@@ -40,4 +39,3 @@
 
       chart.draw(data, options);
     }
-  </script>
