@@ -7,8 +7,71 @@
   <script src="http://code.highcharts.com/highcharts.js"></script>
   -->
    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
- <!-- <script src="https://raw.githack.com/lalikir/onlab_2015_01/master/js/line_chart.js"/> </script>		-->
-  <link rel="stylesheet" type="text/javascript" href="js/line_chart.js">
+   
+   
+  <!-- *******	Ez majd akkor kell amikor kikerül innen a chart a külön fájlba	********
+	  <script src="https://raw.githack.com/lalikir/onlab_2015_01/master/js/line_chart.js"/> </script>		
+	-->
+
+	
+	<style>
+	
+	#linechart_material {
+		margin-bottom: 20px;
+	}
+	
+	</style>
+	
+	
+	
+	
+	
+  
+  <script>
+  
+    google.load('visualization', '1.1', {packages: ['line']});
+    google.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('number', 'Day');
+      data.addColumn('number', 'C°');
+ //     data.addColumn('number', 'The Avengers');
+ //     data.addColumn('number', 'Transformers: Age of Extinction');
+
+      data.addRows([
+        [1,  37.8 ],
+        [2,  30.9 ],
+        [3,  25.4 ],
+        [4,  11.7 ],
+        [5,  11.9 ],
+        [6,   8.8 ],
+        [7,   7.6 ],
+        [8,  12.3 ],
+        [9,  16.9 ],
+        [10, 12.8 ]
+
+      ]);
+
+      var options = {
+        chart: {
+          title: 'Hőmérséklet:',
+          subtitle: 'Érték: (Celsius)'
+        },
+        width: 900,
+        height: 500
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_material'));
+
+      chart.draw(data, options);
+    }
+
+  
+  
+  </script>
+  
   
 	
 	
@@ -18,7 +81,6 @@
     <div>This is our socket.html file <br>
 	The generated random number is:<p id= "test" style="color:blue;font-weight:bold"></p></div>
 
-<div id="container" style="width:100%; height:400px;"></div>
 
   <div id="linechart_material"></div>
 
@@ -26,18 +88,18 @@
 <form id="sending">
 Sending message:
 <input type="text" id="message"></input>
-<input type="submit" ></input>
+<input type="submit" id="kuld"></input>
 
 </form> 
 
 
 	<script>
 
-		/*$(document).ready(function() {
-			$("#frissit").click(function(){
+		$(document).ready(function() {
+			$("#kuld").click(function(){
 				refreshing();
 		}); 
-		});*/
+		});
 
 		
 		var socket = io();
@@ -49,22 +111,24 @@ Sending message:
 		document.getElementById('test').value = number;
 		});
 		
-/*		function refreshing()
+		function refreshing()
 		{
-		window.alert("");
-		socket.on('torefresh', function (data2) 
-		{
-			socket.emit("torefresh", {hali: 'Lali'})
-	
-		});
+//		window.alert("");
+		socket.on("chartdata", function (data){
+			var city_json=JSON.parse(data);
+			window.alert(city_json.list[1].temp.day);
+//			console.log(data.homerseklet);
+			});
 		
-}*/
+}
 
 		$("#sending").submit(function(e)
 		{
 		socket.emit("getcity", $("#message").val());
 		//alert("valami");
 		});
+		
+
 		
 
 

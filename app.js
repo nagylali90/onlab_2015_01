@@ -3,9 +3,11 @@ var server = require('http').createServer(app).listen(3000);
 var io = require('socket.io').listen(server);
 var fs = require('fs');
 var request = require("request")
-var parsedJSON = require('./city.json');
+var parsedJSON = require('./city.json');		//városok és ID-k vannak benne
+var JSONstring;									//a kiválasztott városról lekérdezett adatok vannak benne
 var clients = [];
 var is_client = 0;
+var temperatures = [];
 
 
 
@@ -63,14 +65,20 @@ io.sockets.on('connection', function (socket) {
 //			var formatted = t.format("dd.mm.yyyy hh:MM:ss");
 
 				
-		       console.log(t); // Print the json response
-			   
+		       ; // Print the json response
+			   JSONstring = JSON.stringify(body);
+				   
 
 			}
 		})
+		
+			socket.emit("chartdata", JSONstring);
 
 		
 	});
+	
+
+	
 	
 	  socket.on('disconnect', function () {
 	  	for (i=0; i<clients.length; i++) {
