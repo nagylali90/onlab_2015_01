@@ -72,7 +72,7 @@ io.sockets.on('connection', function (socket) {
 			}
 		})
 		
-			socket.emit("chartdata", JSONstring);
+			socket.emit("buildchart", JSONstring);
 
 		
 	});
@@ -88,6 +88,7 @@ io.sockets.on('connection', function (socket) {
 			}
 		}
 		io.emit('user disconnected');
+		console.log("disc")
 
 	  });
 	

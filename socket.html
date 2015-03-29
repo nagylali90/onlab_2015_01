@@ -29,44 +29,6 @@
   
   <script>
   
-    google.load('visualization', '1.1', {packages: ['line']});
-    google.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-
-      var data = new google.visualization.DataTable();
-      data.addColumn('number', 'Day');
-      data.addColumn('number', 'C°');
- //     data.addColumn('number', 'The Avengers');
- //     data.addColumn('number', 'Transformers: Age of Extinction');
-
-      data.addRows([
-        [1,  37.8 ],
-        [2,  30.9 ],
-        [3,  25.4 ],
-        [4,  11.7 ],
-        [5,  11.9 ],
-        [6,   8.8 ],
-        [7,   7.6 ],
-        [8,  12.3 ],
-        [9,  16.9 ],
-        [10, 12.8 ]
-
-      ]);
-
-      var options = {
-        chart: {
-          title: 'Hőmérséklet:',
-          subtitle: 'Érték: (Celsius)'
-        },
-        width: 900,
-        height: 500
-      };
-
-      var chart = new google.charts.Line(document.getElementById('linechart_material'));
-
-      chart.draw(data, options);
-    }
 
   
   
@@ -85,19 +47,26 @@
   <div id="linechart_material"></div>
 
 
-<form id="sending">
+
 Sending message:
 <input type="text" id="message"></input>
-<input type="submit" id="kuld"></input>
+<input type="button" id="kuld" value="küldés"></input>
 
-</form> 
 
 
 	<script>
 
+	var chart;
+	var options;
+	var chartdata;
+	
 		$(document).ready(function() {
 			$("#kuld").click(function(){
-				refreshing();
+			socket.emit("getcity", $("#message").val());
+			refreshing();
+
+
+				
 		}); 
 		});
 
@@ -111,58 +80,150 @@ Sending message:
 		document.getElementById('test').value = number;
 		});
 		
+
 		function refreshing()
 		{
 //		window.alert("");
-		socket.on("chartdata", function (data){
+		socket.on("buildchart", function (data){
 			var city_json=JSON.parse(data);
-			window.alert(city_json.list[1].temp.day);
-//			console.log(data.homerseklet);
+			document.getElementById('test').innerHTML = city_json.list[1].temp.day;
+			createchart(city_json, function() { chart.draw(chartdata, options);});
+			
+			//window.alert(city_json.list[1].temp.day);
+
+
+			
 			});
 		
 }
 
 		$("#sending").submit(function(e)
 		{
-		socket.emit("getcity", $("#message").val());
+		
 		//alert("valami");
 		});
 		
 
-		
-
-
-
 	
-	$(document).ready(function() {
-/*	
-	function diagram() { 
-//	alert(($("#test").text()));
-    $('#container').highcharts({
+
+function createchart(chartJSON, callback) {
+	
+	chartdata = new google.visualization.DataTable();
+	chartdata.addColumn('string', 'Day');
+	chartdata.addColumn('number', 'Napi átlag C°');
+	
+	/*     chartdata.addRows([
+        [1,  37.8 ],
+        [2,  30.9 ],
+        [3,  25.4 ],
+        [4,  11.7 ],
+        [5,  11.9 ],
+        [6,   8.8 ],
+        [7,   7.6 ],
+        [8,  12.3 ],
+        [9,  16.9 ],
+        [10, 12.8 ]
+
+	]);*/
+
+      options = {
         chart: {
-            type: 'bar'
+          title: 'Hőmérséklet:',
+          subtitle: 'Érték: (Celsius)'
         },
-        title: {
-            text: 'Random number'
-        },
-        xAxis: {
-            categories: ['Number 1']
-        },
-        yAxis: {
-            title: {
-                text: 'value'
-            }
-        },
-        series: [{
-            name: 'Value',
-            data: [parseInt($("#test").text())]
-        }]
-    });
+        width: 1000,
+        height: 400
+      };
+	  
+	     chart = new google.charts.Line(document.getElementById('linechart_material'));
+	  
+	var rows = createArray (chartJSON);
+	//for (var i in chartJSON.list){
+		//for (var j=0; j<2; j++)
+		//rows.push([i+1, parseInt(chartJSON.list[i].temp.day)]);
+
+		//alert(rows);
+	chartdata.addRows(rows);
+	
+	callback();
+	
+	
+	}
+	
+	
+	//2Dimenziós tömb
+function createArray(array) {
+var iMax = array.list.length;
+var jMax = 2;
+var f = new Array();
+
+var month = new Array();
+month[0] = "Jan";
+month[1] = "Feb";
+month[2] = "Márc";
+month[3] = "Ápr";
+month[4] = "Máj";
+month[5] = "Jún";
+month[6] = "Júl";
+month[7] = "Aug";
+month[8] = "Szept";
+month[9] = "Okt";
+month[10] = "Nov";
+month[11] = "Dec";
+
+for (i=0;i<iMax;i++) {
+ f[i]=new Array();
+ for (j=0;j<jMax;j++) {
+	if(j==0){  
+		var t = new Date( (array.list[i].dt)*1000 );
+		
+		var resultstring = month[t.getMonth()] + "." + t.getDate();
+		//var formatted = t.format("dd.mm.yyyy hh:MM:ss");
+		
+		
+		f[i][j]=resultstring;
+		}
+	else{
+		f[i][j]=array.list[i].temp.day-273.15;
+		}
+
+ }
 }
-setTimeout(diagram, 50)*/
- 
- 
-});
+return f;
+}
+
+
+
+/********************** Chart adatai**************************/
+
+    google.load('visualization', '1.1', {packages: ['line']});
+	google.setOnLoadCallback(drawChart);
+
+	function drawChart() {
+
+
+ //     data.addColumn('number', 'The Avengers');
+ //     data.addColumn('number', 'Transformers: Age of Extinction');
+
+
+
+   
+	  
+	 /* var button = document.getElementById("kuld");
+	  button.onclick = function ()
+	  {
+	  	refreshing();
+		window.alert("clicked");  
+
+	 }*/
+
+      //chart.draw(data, options);
+    }
+
+
+
+
+
 	</script>
 
 
