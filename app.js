@@ -25,7 +25,7 @@ io.sockets.on('connection', function (socket) {
 	
 	clients.push(socket);			//---------------aktív kapcsolatok karbantartásához--------------
 	console.log('Connected user is:', clients.length);
-	io.sockets.emit('info', { msg: Math.floor((Math.random() * 100) + 1 )});  //------------ezzel tudom az összes socketnek ugyanazt kiküldeni------------
+	io.sockets.emit('info', parsedJSON);  //------------ezzel tudom az összes socketnek ugyanazt kiküldeni------------
 	
 	
 	/****** ha csak az adott socketnek szeretnem:

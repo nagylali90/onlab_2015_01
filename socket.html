@@ -47,11 +47,11 @@
   <div id="linechart_material"></div>
 
 
-
-Sending message:
-<input type="text" id="message"></input>
-<input type="button" id="kuld" value="küldés"></input>
-
+<div id="select_city">
+	Sending message:
+	<select id="city_list"> </select>
+	<input type="button" id="kuld" value="Kiválaszt!"></input>
+</div>
 
 
 	<script>
@@ -62,22 +62,33 @@ Sending message:
 	
 		$(document).ready(function() {
 			$("#kuld").click(function(){
-			socket.emit("getcity", $("#message").val());
+			socket.emit("getcity", $("#city_list option:selected").text());
 			refreshing();
-
-
-				
+			
 		}); 
 		});
+		
+
 
 		
 		var socket = io();
 		socket.on('info', function (data) {
-		console.log(data.msg);
-		var tmp =document.getElementById('test');
-		var number = parseFloat(data.msg);
-		tmp.innerHTML = number;
-		document.getElementById('test').value = number;
+		var cities = [];
+		for (var i=0 in data){
+			cities.push(data[i].name);
+			}
+			cities.sort();
+		
+		for (var i=0 in cities){
+			  var select = document.getElementById('city_list');
+			  select.options[select.options.length] = new Option(cities[i], cities[i]);
+		}
+			console.log(cities);
+		//var tmp =document.getElementById('test');
+		//var number = parseFloat(data.msg);
+		//tmp.innerHTML = number;
+		//document.getElementById('test').value = number;
+		
 		});
 		
 
@@ -86,7 +97,7 @@ Sending message:
 //		window.alert("");
 		socket.on("buildchart", function (data){
 			var city_json=JSON.parse(data);
-			document.getElementById('test').innerHTML = city_json.list[1].temp.day;
+			document.getElementById('test').innerHTML = city_json.list[1].temp.day-273.15;
 			createchart(city_json, function() { chart.draw(chartdata, options);});
 			
 			//window.alert(city_json.list[1].temp.day);
