@@ -8,14 +8,30 @@ var JSONstring;									//a kiválasztott városról lekérdezett adatok vannak 
 var clients = [];
 var is_client = 0;
 var temperatures = [];
+var dashboards = {};
+app.set('view engine', 'ejs');
+
 
 
 
 var city_id;
 
+
 app.get('/', function (req, res) {
+  res.render(__dirname + '/socket');
+});
+
+app.get('/dash/:id', function (req, res) {
+
+    if (dashboards[req.param.id])
+    {
+        var choice=dashboardok[req.param.id];
+    }
+
   res.sendfile(__dirname + '/socket.html');
 });
+
+
 
 
 
@@ -32,7 +48,7 @@ io.sockets.on('connection', function (socket) {
 	socket.emit('info', { msg: Math.floor((Math.random() * 100) + 1 )});
 	*******/
 	
-	socket.on('getcity', function(data)
+	socket.on('getcity', function(data)			//egy ugyanilyennel nyomon lehet követni a a dashboardokat   ______ 
 	{
 		//socket.emit('torefresh', { msg: "reggeli"});
 		console.log(data);
