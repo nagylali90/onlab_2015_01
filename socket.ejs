@@ -3,6 +3,8 @@
 		<script src="/socket.io/socket.io.js"></script>
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		
+		<script>var dashboardid=<%= dashboardid %></script>
   <!--	
   <script src="http://code.highcharts.com/highcharts.js"></script>
   -->
@@ -40,15 +42,14 @@
   </head>
   <body>
     
-    <div>This is our socket.html file <br>
-	The generated random number is:<p id= "test" style="color:blue;font-weight:bold"></p></div>
+    <div>:<p id= "test" style="color:blue;font-weight:bold"></p></div>
 
 
   <div id="linechart_material"></div>
 
 
 <div id="select_city">
-	Sending message:
+	Válaszd ki a várost:
 	<select id="city_list"> </select>
 	<input type="button" id="kuld" value="Kiválaszt!"></input>
 </div>

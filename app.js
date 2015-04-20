@@ -9,8 +9,19 @@ var clients = [];
 var is_client = 0;
 var temperatures = [];
 var dashboards = {};
-app.set('view engine', 'ejs');
+var dash_id;
 
+
+// Using the .html extension instead of
+// having to name the views as *.ejs
+app.engine('.html', require('ejs').__express);
+ 
+// Set the folder where the pages are kept
+app.set('views', __dirname + '/views');
+ 
+// This avoids having to provide the 
+// extension to res.render()
+app.set('view engine', 'html');
 
 
 
@@ -18,20 +29,25 @@ var city_id;
 
 
 app.get('/', function (req, res) {
-  res.render(__dirname + '/socket');
+	dash_id = Math.floor((Math.random() * 100000000) + 1);
+//	res.send({dashboardid: dash_id});
+	res.redirect('/:'+ dash_id);
+	
 });
 
-app.get('/dash/:id', function (req, res) {
-
-    if (dashboards[req.param.id])
+app.get('/:id', function (req, res) {
+	console.log(req.params.id)
+	
+    if (dashboards[req.params.id])
     {
-        var choice=dashboardok[req.param.id];
+        var choice=dashboardok[req.params.id];
+//		console.log(req.params.id);
+
+
     }
 
-  res.sendfile(__dirname + '/socket.html');
+  res.sendfile(__dirname + '/views/socket.html');;
 });
-
-
 
 
 
@@ -39,7 +55,8 @@ app.get('/dash/:id', function (req, res) {
 io.sockets.on('connection', function (socket) {
 	
 	
-	clients.push(socket);			//---------------aktív kapcsolatok karbantartásához--------------
+	clients.push(socket);
+	//---------------aktív kapcsolatok karbantartásához--------------
 	console.log('Connected user is:', clients.length);
 	io.sockets.emit('info', parsedJSON);  //------------ezzel tudom az összes socketnek ugyanazt kiküldeni------------
 	
@@ -57,7 +74,7 @@ io.sockets.on('connection', function (socket) {
 		for(var i=0; i<parsedJSON.length; i++){
 			if (parsedJSON[i].name == data)
 				{
-					console.log(parsedJSON[i]._id);
+//					console.log(parsedJSON[i]._id);
 					city_id = parsedJSON[i]._id
 				}
 //				else 	console.log("nincs");		
@@ -92,6 +109,12 @@ io.sockets.on('connection', function (socket) {
 
 		
 	});
+	
+		socket.on('dash', function(data){
+
+			dashboards[data.dashboardid]=data.cities;
+			});
+
 	
 
 	
