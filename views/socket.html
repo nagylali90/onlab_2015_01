@@ -4,7 +4,7 @@
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 		
-			<script>var dashboardid=<%= dash_id %></script>
+			<script>var dashboardid=<%= dashboardid %>;var my_cities=<%- mydashboard %>; </script>
   <!--	
   <script src="http://code.highcharts.com/highcharts.js"></script>
   -->
@@ -45,8 +45,11 @@
     <div>This is our socket.html file <br>
 	The generated random number is:<p id= "test" style="color:blue;font-weight:bold"></p></div>
 
-
-  <div id="linechart_material"></div>
+	<div id="charts">
+	<div id="linechart_material"></div>
+	
+	</div>
+  
 
 
 <div id="select_city">
@@ -61,11 +64,27 @@
 	var chart;
 	var options;
 	var chartdata;
+	var charts_number;
+	var recent_city = 0;
 	
 		$(document).ready(function() {
+		refreshing();
+		if(my_cities.length!=0){
+			charts_number = my_cities.length;
+			for(var i=0; i<charts_number; i++){
+			//socket.emit("getcity", my_cities[i]);
+//			recent_city = i;
+			
+			$('#charts').append($('<div/>', { id: 'linechart_material_' + i, 'class' : 'linechart'}));
+
+//			console.log("valami");
+				}
+			}
+		
 			$("#kuld").click(function(){
 			socket.emit("getcity", $("#city_list option:selected").text());
-			refreshing();
+			socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text()});
+
 			
 		}); 
 		});
@@ -121,6 +140,7 @@
 	
 
 function createchart(chartJSON, callback) {
+//	recent_city++
 	
 	chartdata = new google.visualization.DataTable();
 	chartdata.addColumn('string', 'Day');

@@ -31,22 +31,27 @@ var city_id;
 app.get('/', function (req, res) {
 	dash_id = Math.floor((Math.random() * 100000000) + 1);
 //	res.send({dashboardid: dash_id});
-	res.redirect('/:'+ dash_id);
+	res.redirect('/dash/'+ dash_id);
+	
 	
 });
 
-app.get('/:id', function (req, res) {
-	console.log(req.params.id)
+app.get('/dash/:id', function (req, res) {
+	console.log("dash"+req.params.id);
 	
     if (dashboards[req.params.id])
     {
-        var choice=dashboardok[req.params.id];
+        var choice=dashboards[req.params.id];
 //		console.log(req.params.id);
+    }else{
+		dashboards[req.params.id]=new Array();
+	}
+	console.log(dashboards);
 
-
-    }
-
-  res.sendfile(__dirname + '/views/socket.html');;
+res.render("socket",{
+	dashboardid:req.params.id, mydashboard: JSON.stringify(choice)
+	});
+ // res.sendfile(__dirname + '/views/socket.html');;
 });
 
 
@@ -69,6 +74,11 @@ io.sockets.on('connection', function (socket) {
 	{
 		//socket.emit('torefresh', { msg: "reggeli"});
 		console.log(data);
+//		dashboards[data.dashboardid]=data;
+
+		
+		
+		
 
 		//-------------végignézi a tárolt városok listáját, és a megfelelő város id mezőjét kiválasztja-----------
 		for(var i=0; i<parsedJSON.length; i++){
@@ -112,7 +122,8 @@ io.sockets.on('connection', function (socket) {
 	
 		socket.on('dash', function(data){
 
-			dashboards[data.dashboardid]=data.cities;
+			dashboards[data.id].push(data.city);
+			
 			});
 
 	
