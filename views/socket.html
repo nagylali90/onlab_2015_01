@@ -45,8 +45,7 @@
     <div>This is our socket.html file <br>
 	The generated random number is:<p id= "test" style="color:blue;font-weight:bold"></p></div>
 
-	<div id="charts">
-	<div id="linechart_material"></div>
+	<div id="charts" >
 	
 	</div>
   
@@ -67,21 +66,35 @@
 	var charts_number;
 	var recent_city = 0;
 	
+	function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+	
+	
+	
 		$(document).ready(function() {
 		refreshing();
+
 		if(my_cities.length!=0){
 			charts_number = my_cities.length;
 			for(var i=0; i<charts_number; i++){
-			//socket.emit("getcity", my_cities[i]);
-//			recent_city = i;
+			socket.emit("getcity", my_cities[i]);
 			
 			$('#charts').append($('<div/>', { id: 'linechart_material_' + i, 'class' : 'linechart'}));
 
 //			console.log("valami");
 				}
+			}else{
+				$('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart'}));
 			}
 		
 			$("#kuld").click(function(){
+			$('#charts').append($('<div/>', { id: 'linechart_material_' + ++recent_city, 'class' : 'linechart'}));
 			socket.emit("getcity", $("#city_list option:selected").text());
 			socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text()});
 
@@ -121,6 +134,8 @@
 			var city_json=JSON.parse(data);
 			document.getElementById('test').innerHTML = city_json.list[1].temp.day-273.15;
 			createchart(city_json, function() { chart.draw(chartdata, options);});
+			console.log(city_json.city.name);
+
 			
 			//window.alert(city_json.list[1].temp.day);
 
@@ -162,14 +177,15 @@ function createchart(chartJSON, callback) {
 
       options = {
         chart: {
-          title: 'Hőmérséklet:',
+          title: 'Hőmérséklet: '+ chartJSON.city.name,
           subtitle: 'Érték: (Celsius)'
         },
         width: 1000,
         height: 400
       };
+	     chart = new google.charts.Line(document.getElementById('linechart_material_'+recent_city ));
+		 recent_city++;
 	  
-	     chart = new google.charts.Line(document.getElementById('linechart_material'));
 	  
 	var rows = createArray (chartJSON);
 	//for (var i in chartJSON.list){
