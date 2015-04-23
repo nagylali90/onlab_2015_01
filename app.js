@@ -45,6 +45,7 @@ app.get('/dash/:id', function (req, res) {
 //		console.log(req.params.id);
     }else{
 		dashboards[req.params.id]=new Array();
+		choice=dashboards[req.params.id];
 	}
 	console.log(dashboards);
 
@@ -54,7 +55,21 @@ res.render("socket",{
  // res.sendfile(__dirname + '/views/socket.html');;
 });
 
+	function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
 
+
+
+
+function WaitResponse() {
+	
+}
 
 
 io.sockets.on('connection', function (socket) {
@@ -110,12 +125,15 @@ io.sockets.on('connection', function (socket) {
 				
 		       ; // Print the json response
 			   JSONstring = JSON.stringify(body);
-				   
+				
+				socket.emit("buildchart", JSONstring); 
 
 			}
 		})
-		
-			socket.emit("buildchart", JSONstring);
+					
+
+									
+
 
 		
 	});
@@ -123,6 +141,8 @@ io.sockets.on('connection', function (socket) {
 		socket.on('dash', function(data){
 
 			dashboards[data.id].push(data.city);
+			console.log(dashboards[data.id].length)
+			
 			
 			});
 
