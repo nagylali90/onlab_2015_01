@@ -18,5 +18,5 @@
 {"_id":7284840,"name":"Budapest XX. keruelet","country":"HU","coord":{"lon":19.100929,"lat":47.436741}},
 {"_id":7284841,"name":"Budapest XVII. keruelet","country":"HU","coord":{"lon":19.25388,"lat":47.479969}},
 {"_id":7284842,"name":"Budapest III. keruelet","country":"HU","coord":{"lon":19.04501,"lat":47.541569}},
-{"_id":7284843,"name":"Budapest II. keruelet","country":"HU","coord":{"lon":19.031839,"lat":47.512909}},
+{"_id":7284843,"name":"Budapest II. keruelet","country":"HU","coord":{"lon":19.031839,"lat":47.512909}},  
 {"_id":7284844,"name":"Budapest I. keruelet","country":"HU","coord":{"lon":19.03961,"lat":47.497051}}]

@@ -25,7 +25,8 @@ app.set('view engine', 'html');
 
 
 
-var city_id;
+var city_id; 
+var ujvaltozo;  //
 
 
 app.get('/', function (req, res) {
