@@ -10,6 +10,7 @@ var is_client = 0;
 var temperatures = [];
 var dashboards = {};
 var dash_id;
+var AppId = "fd4d21cfaa35d69abf9dfd00a761cb65";
 
 
 // Using the .html extension instead of
@@ -108,7 +109,7 @@ io.sockets.on('connection', function (socket) {
 		
 		
 		
-		var url = "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + city_id;
+		var url = "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + city_id + "&appid=" + AppId;
 
 
 
@@ -126,6 +127,7 @@ io.sockets.on('connection', function (socket) {
 				
 		       ; // Print the json response
 			   JSONstring = JSON.stringify(body);
+			   console.log(JSONstring);
 				
 				socket.emit("buildchart", JSONstring); 
 
