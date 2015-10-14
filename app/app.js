@@ -1,8 +1,10 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var server = require('http').createServer(app).listen(3000);
 var io = require('socket.io').listen(server);
 var fs = require('fs');
-var request = require("request")
+var request = require("request");
+var path = require('path');
 var parsedJSON = require('./city.json');		//városok és ID-k vannak benne
 var JSONstring;									//a kiválasztott városról lekérdezett adatok vannak benne
 var clients = [];
@@ -16,6 +18,10 @@ var AppId = "fd4d21cfaa35d69abf9dfd00a761cb65";
 // Using the .html extension instead of
 // having to name the views as *.ejs
 app.engine('.html', require('ejs').__express);
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+
  
 // Set the folder where the pages are kept
 app.set('views', __dirname + '/views');
@@ -25,23 +31,25 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 
 
-
 var city_id; 
 var ujvaltozo;  //
-
 
 app.get('/', function (req, res) {
 	dash_id = Math.floor((Math.random() * 100000000) + 1);
 //	res.send({dashboardid: dash_id});
 	res.redirect('/dash/'+ dash_id);
-	
-	
+
 });
+
 
 app.get('/dash/:id', function (req, res) {
 	console.log("dash"+req.params.id);
-	
-    if (dashboards[req.params.id])
+
+	app.use(express.static(path.join(__dirname, 'public')));
+
+
+
+	if (dashboards[req.params.id])
     {
         var choice=dashboards[req.params.id];
 //		console.log(req.params.id);
