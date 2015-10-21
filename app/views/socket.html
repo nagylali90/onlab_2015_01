@@ -68,8 +68,8 @@
 
       .item.w2 { width:   80px; background: #9C0; }
       .item.h2 { height:  80px; background: #0C9; }
-      .item.h4 { height: 160px; background: #C90; }
-      .item.w4 { width:  160px; background: #90C; }
+      .item.h4 { height: 260px; background: #C90; }
+      .item.w4 { width:  460px; background: #90C; }
 
       .item.ui-draggable-dragging,
       .item.is-positioning-post-drag {
@@ -85,18 +85,7 @@
 
       <script>
           //csempeket kezelo szkript
-          $( function() {
-              var $container = $('.packery').packery({
-                  columnWidth: 80,
-                  rowHeight: 80
-              });
-              // get item elements, jQuery-ify them
-              var $itemElems = $container.find('.item');
-              // make item elements draggable
-              $itemElems.draggable();
-              // bind Draggable events to Packery
-              $container.packery( 'bindUIDraggableEvents', $itemElems );
-          });
+
 
       </script>
 
@@ -109,34 +98,12 @@
 
       <div>Holnapi hőmérséklet: <p id= "test" style="color:blue;font-weight:bold"></p></div>
 
-      <div id="charts" class="packery" >
 
-      </div>
 
-      <div id="container" class="js-packery"
-           data-packery-options='{ "itemSelector": ".item", "gutter": 10 }'>
-
-          </div>
       <h1>Teszt csempek</h1>
 
-      <div class="packery">
-          <div class="item w4 h2"></div>
-          <div class="item w2 h2"></div>
-          <div class="item w2 h4"></div>
-          <div class="item w2 h2"></div>
-          <div class="item w4 h4"></div>
-          <div class="item w2 h2"></div>
-          <div class="item w2 h4"></div>
-          <div class="item w4 h4"></div>
-          <div class="item w2 h2"></div>
-          <div class="item w2 h2"></div>
-          <div class="item w2 h2"></div>
-          <div class="item w4 h4"></div>
-          <div class="item w2 h2"></div>
-          <div class="item w2 h4"></div>
-          <div class="item w4 h4"></div>
-          <div class="item w2 h2"></div>
-          <div class="item w2 h2"></div>
+      <div id = "charts" class="packery">
+
       </div>
       <button class="button">Append items</button>
 
@@ -146,7 +113,7 @@
   <div id="select_city">
       Sending message:
       <select id="city_list"> </select>
-      <input type="button" id="kuld" value="Kiválaszt!"></input>
+      <input type="button" onclick="magic()" id="kuld" value="Kiválaszt!"></input>
   </div>
 
 
@@ -157,6 +124,28 @@
       var chartdata;
       var charts_number;
       var recent_city = 0;
+      var citycntr = 0;
+
+      //Csempe kezelése
+
+      function magic() {
+          var $container = $('.packery').packery({
+              columnWidth: 80,
+              rowHeight: 80
+          });
+          // get item elements, jQuery-ify them
+          var $itemElems = $container.find('.item');
+          // make item elements draggable
+          $itemElems.draggable();
+          // bind Draggable events to Packery
+          $container.packery( 'bindUIDraggableEvents', $itemElems );
+          console.log("uzenet");
+      };
+
+
+
+
+
 
       function sleep(milliseconds) {
     var start = new Date().getTime();
@@ -170,27 +159,29 @@
 
 
           $(document).ready(function() {
-          refreshing();
+              refreshing();
 
-          if(my_cities.length!=0){
+              if(my_cities.length!=0){
               charts_number = my_cities.length;
-              for(var i=0; i<charts_number; i++){
+              if(recent_city<charts_number){
 
-              socket.emit("getcity", my_cities[i]);
-
-              $('#charts').append($('<div/>', { id: 'linechart_material_' + i, 'class' : 'linechart item w4 h4'}));
+                  loadStoredElements();
 
 
-  //			console.log("valami");
+
+
+
+                  //			console.log("valami");
                   }
-              }else{
-                  $('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
-              }
-
+          }
               $("#kuld").click(function(){
+
               $('#charts').append($('<div/>', { id: 'linechart_material_' + ++recent_city, 'class' : 'linechart item w4 h4'}));
               socket.emit("getcity", $("#city_list option:selected").text());
               socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text()});
+                  magic();
+
+
 
 
           });
@@ -221,6 +212,18 @@
           });
 
 
+      //BETÖLTÉSKOR FELTÖLTI AZ OLDALT
+
+      function loadStoredElements(){
+          $('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
+          alert("elküldve");
+          socket.emit("getcity", my_cities[recent_city]);
+          console.log("sadsadadasd");
+          magic();
+
+      }
+
+
           function refreshing()
           {
   //		window.alert("");
@@ -229,10 +232,14 @@
               document.getElementById('test').innerHTML = city_json.list[1].temp.day-273.15;
               createchart(city_json, function() { chart.draw(chartdata, options);});
               console.log(city_json.city.name);
+              if(recent_city<charts_number) {
+                  loadStoredElements();
+              }
 
 
 
-              //window.alert(city_json.list[1].temp.day);
+
+                  //window.alert(city_json.list[1].temp.day);
 
 
 
@@ -251,7 +258,6 @@
 
   function createchart(chartJSON, callback) {
   //	recent_city++
-
       chartdata = new google.visualization.DataTable();
       chartdata.addColumn('string', 'Day');
       chartdata.addColumn('number', 'Napi átlag C°');
@@ -275,11 +281,11 @@
             title: 'Hőmérséklet: '+ chartJSON.city.name,
             subtitle: 'Érték: (Celsius)'
           },
-          width: 160,
-          height: 160
+          width: 460,
+          height: 260
         };
-           chart = new google.charts.Line(document.getElementById('linechart_material_'+recent_city ));
-           recent_city++;
+      chart = new google.charts.Line(document.getElementById('linechart_material_'+recent_city ));
+      recent_city++;
 
 
       var rows = createArray (chartJSON);
@@ -342,6 +348,7 @@
   /********************** Chart adatai**************************/
 
       google.load('visualization', '1.1', {packages: ['line']});
+      console.log("meghívva");
       google.setOnLoadCallback(drawChart);
 
       function drawChart() {

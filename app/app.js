@@ -126,6 +126,8 @@ io.sockets.on('connection', function (socket) {
 			json: true
 		}, function (error, response, body) {
 
+
+
 			if (!error && response.statusCode === 200) {
 			
 			
@@ -133,13 +135,13 @@ io.sockets.on('connection', function (socket) {
 //			var formatted = t.format("dd.mm.yyyy hh:MM:ss");
 
 				
-		       ; // Print the json response
+		        // Print the json response
 			   JSONstring = JSON.stringify(body);
 			   console.log(JSONstring);
-				
-				socket.emit("buildchart", JSONstring); 
 
+				socket.emit("buildchart", JSONstring);
 			}
+
 		})
 					
 
