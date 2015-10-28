@@ -184,20 +184,20 @@
                   }
           }
               var $container = $('.packery').packery();
-              $("#kuld").on('click', function(){
+              $("#kuld").on('click', function() {
 
                   var elems = [];
 
                   var elem = getItemElement();
-                  elems.push( elem );
+                  elems.push(elem);
 
                   // append elements to container
-                  $container.append( elems );
+                  $container.append(elems);
                   // add and lay out newly appended elements
-                  $container.packery( 'appended', elems );
+                  $container.packery('appended', elems);
 
 
-                  $('#kuld').on( 'click', function() {
+                  $('#kuld').on('click', function () {
                       // create new item elements
 
                   });
@@ -207,8 +207,8 @@
                       var widthClass = 'w4';
                       var heightClass = 'h4';
                       var elemtype = "linechart";
-                      elem.id="linechart_material_" + recent_city;
-                      elem.className = elemtype + ' ' +'item ' + widthClass + ' ' + heightClass;
+                      elem.id = "linechart_material_" + recent_city;
+                      elem.className = elemtype + ' ' + 'item ' + widthClass + ' ' + heightClass;
                       return elem;
                   }
 
@@ -250,7 +250,7 @@
 
       function loadStoredElements(){
          // magic();
-          $('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
+          //$('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
           alert("elküldve");
           socket.emit("getcity", my_cities[recent_city]);
           console.log("sadsadadasd");
