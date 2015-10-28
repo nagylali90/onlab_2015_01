@@ -12,10 +12,12 @@
   -->
    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/packery/1.4.3/packery.pkgd.js"></script>
-   
-  <!-- *******	Ez majd akkor kell amikor kikerül innen a chart a külön fájlba	********
-	  <script src="https://raw.githack.com/lalikir/onlab_2015_01/master/js/line_chart.js"/> </script>		
-	-->
+      <script src="//cdnjs.cloudflare.com/ajax/libs/draggabilly/1.2.0/draggabilly.pkgd.js"></script>
+
+
+      <!-- *******	Ez majd akkor kell amikor kikerül innen a chart a külön fájlba	********
+          <script src="https://raw.githack.com/lalikir/onlab_2015_01/master/js/line_chart.js"/> </script>
+        -->
 
       <!--
       ********************CSEMPÉK CSS fájlja **************************************
@@ -32,7 +34,7 @@
 
       /********   Csempéket kezelő kódrészlet  **********/
 
-      * {
+      {
           -webkit-box-sizing: border-box;
           -moz-box-sizing: border-box;
           box-sizing: border-box;
@@ -51,7 +53,6 @@
           display: block;
           clear: both;
       }
-
       .item {
           width: 40px;
           height: 40px;
@@ -71,12 +72,14 @@
       .item.h4 { height: 260px; background: #C90; }
       .item.w4 { width:  460px; background: #90C; }
 
-      .item.ui-draggable-dragging,
+
+      .item.is-dragging,
       .item.is-positioning-post-drag {
-          border-color: white;
+          border-color: yellow;
           background: #09F;
           z-index: 2;
       }
+
 
 
       </style>
@@ -129,18 +132,24 @@
       //Csempe kezelése
 
       function magic() {
-          var $container = $('.packery').packery({
-              columnWidth: 80,
-              rowHeight: 80
-          });
-          // get item elements, jQuery-ify them
-          var $itemElems = $container.find('.item');
-          // make item elements draggable
-          $itemElems.draggable();
-          // bind Draggable events to Packery
-          $container.packery( 'bindUIDraggableEvents', $itemElems );
+
+              var $container = $('.packery').packery({
+                  columnWidth: 0,
+                  rowHeight: 0
+              });
+              // get item elements, jQuery-ify them
+              var $itemElems = $container.find('.item');
+              // make item elements draggable
+              $itemElems.draggable();
+              // bind Draggable events to Packery
+              $container.packery( 'bindUIDraggableEvents', $itemElems );
+
           console.log("uzenet");
       };
+
+
+
+
 
 
 
@@ -174,12 +183,37 @@
                   //			console.log("valami");
                   }
           }
-              $("#kuld").click(function(){
+              var $container = $('.packery').packery();
+              $("#kuld").on('click', function(){
 
-              $('#charts').append($('<div/>', { id: 'linechart_material_' + ++recent_city, 'class' : 'linechart item w4 h4'}));
+                  var elems = [];
+
+                  var elem = getItemElement();
+                  elems.push( elem );
+
+                  // append elements to container
+                  $container.append( elems );
+                  // add and lay out newly appended elements
+                  $container.packery( 'appended', elems );
+
+
+                  $('#kuld').on( 'click', function() {
+                      // create new item elements
+
+                  });
+
+                  function getItemElement() {
+                      var elem = document.createElement('div');
+                      var widthClass = 'w4';
+                      var heightClass = 'h4';
+                      var elemtype = "linechart";
+                      elem.id="linechart_material_" + 10;
+                      elem.className = elemtype + ' ' +'item ' + widthClass + ' ' + heightClass;
+                      return elem;
+                  }
+
               socket.emit("getcity", $("#city_list option:selected").text());
               socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text()});
-                  magic();
 
 
 
@@ -215,11 +249,11 @@
       //BETÖLTÉSKOR FELTÖLTI AZ OLDALT
 
       function loadStoredElements(){
+         // magic();
           $('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
           alert("elküldve");
           socket.emit("getcity", my_cities[recent_city]);
           console.log("sadsadadasd");
-          magic();
 
       }
 
@@ -235,6 +269,10 @@
               if(recent_city<charts_number) {
                   loadStoredElements();
               }
+              else{
+                  magic();          //amikor már minden vacak betöltődött, akkor meghívjuk ezt a függvényt
+              }
+              console.log("frissult");
 
 
 
