@@ -13,6 +13,7 @@
    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/packery/1.4.3/packery.pkgd.js"></script>
       <script src="//cdnjs.cloudflare.com/ajax/libs/draggabilly/1.2.0/draggabilly.pkgd.js"></script>
+      <script src="https://raw.githack.com/lalikir/onlab_2015_01/master/app/public/js/jquery-watch.js"> </script>
 
 
 
@@ -88,6 +89,9 @@
   </head>
     <body>
 
+
+
+
       <div>Holnapi hőmérséklet: <p id= "test" style="color:blue;font-weight:bold"></p></div>
 
 
@@ -119,6 +123,7 @@
       var charts_number;
       var recent_city = 0;
       var citycntr = 0;
+      var LastElement = 0;
 
 
 
@@ -163,6 +168,7 @@
           $container.append(elems);
           // add and lay out newly appended elements
           $container.packery('appended', elems);
+          return elem;
 
       }
 
@@ -189,7 +195,8 @@
               var $container = $('.packery').packery();
 
               $("#kuld").on('click', function() {
-                  addNewDataElement();
+                  LastElement=addNewDataElement();
+                  watch(LastElement.id);
               socket.emit("getcity", $("#city_list option:selected").text());
               socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text()});
           });
@@ -239,6 +246,21 @@
   }
 
       /********************** CSS Változások figyelése**************************/
+      function watch(elem) {
+          //console.log("watched");
+          var el = $("#"+LastElement.id);
+          el.watch({
+              properties: "top,left",
+              callback: moveReaction
+          });
+
+          function moveReaction() {
+              console.log("mozdult");
+          }
+      }
+
+
+
 
 
       /********************** Chart inicializálása**************************/
