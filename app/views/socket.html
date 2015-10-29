@@ -1,6 +1,8 @@
 <html>
   <head>
 		<script src="/socket.io/socket.io.js"></script>
+      <script type="text/javascript" src="./node_modules/execute_method/dist/execute_method.js"></script>
+      <script type="text/javascript" src="./node_modules/jquery-csswatch/dist/jquery-csswatch.js"></script>
 
       <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
       <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
@@ -84,18 +86,6 @@
 
       </style>
 
-
-
-      <script>
-          //csempeket kezelo szkript
-
-
-      </script>
-
-
-
-
-
   </head>
     <body>
 
@@ -108,7 +98,6 @@
       <div id = "charts" class="packery">
 
       </div>
-      <button class="button">Append items</button>
 
 
 
@@ -120,6 +109,9 @@
   </div>
 
 
+
+
+
       <script>
 
       var chart;
@@ -128,6 +120,8 @@
       var charts_number;
       var recent_city = 0;
       var citycntr = 0;
+
+
 
       //Csempe kezelése
 
@@ -147,16 +141,34 @@
           console.log("uzenet");
       };
 
+      function getItemElement() {
+          var elem = document.createElement('div');
+          var widthClass = 'w4';
+          var heightClass = 'h4';
+          var elemtype = "linechart";
+          elem.id = "linechart_material_" + recent_city;
+          elem.className = elemtype + ' ' + 'item ' + widthClass + ' ' + heightClass;
+          return elem;
+      }
+
+      function addNewDataElement() {
+          var $container = $('.packery').packery();
+          console.log("hozzaadva");
+
+          var elems = [];
+
+          var elem = getItemElement();
+          elems.push(elem);
+
+          // append elements to container
+          $container.append(elems);
+          // add and lay out newly appended elements
+          $container.packery('appended', elems);
+
+      }
 
 
-
-
-
-
-
-
-
-      function sleep(milliseconds) {
+          function sleep(milliseconds) {
     var start = new Date().getTime();
     for (var i = 0; i < 1e7; i++) {
       if ((new Date().getTime() - start) > milliseconds){
@@ -164,9 +176,6 @@
       }
     }
   }
-
-
-
           $(document).ready(function() {
               refreshing();
 
@@ -176,53 +185,16 @@
 
                   loadStoredElements();
 
-
-
-
-
-                  //			console.log("valami");
                   }
           }
               var $container = $('.packery').packery();
+
               $("#kuld").on('click', function() {
-
-                  var elems = [];
-
-                  var elem = getItemElement();
-                  elems.push(elem);
-
-                  // append elements to container
-                  $container.append(elems);
-                  // add and lay out newly appended elements
-                  $container.packery('appended', elems);
-
-
-                  $('#kuld').on('click', function () {
-                      // create new item elements
-
-                  });
-
-                  function getItemElement() {
-                      var elem = document.createElement('div');
-                      var widthClass = 'w4';
-                      var heightClass = 'h4';
-                      var elemtype = "linechart";
-                      elem.id = "linechart_material_" + recent_city;
-                      elem.className = elemtype + ' ' + 'item ' + widthClass + ' ' + heightClass;
-                      return elem;
-                  }
-
+                  addNewDataElement();
               socket.emit("getcity", $("#city_list option:selected").text());
               socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text()});
-
-
-
-
           });
           });
-
-
-
 
           var socket = io();
           socket.on('info', function (data) {
@@ -238,29 +210,19 @@
           }
           //
           console.log(cities);
-          //var tmp =document.getElementById('test');
-          //var number = parseFloat(data.msg);
-          //tmp.innerHTML = number;
-          //document.getElementById('test').value = number;
-
-          });
+            });
 
 
       //BETÖLTÉSKOR FELTÖLTI AZ OLDALT
 
       function loadStoredElements(){
-         // magic();
           //$('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
-          alert("elküldve");
+          addNewDataElement();
           socket.emit("getcity", my_cities[recent_city]);
-          console.log("sadsadadasd");
-
       }
-
 
           function refreshing()
           {
-  //		window.alert("");
           socket.on("buildchart", function (data){
               var city_json=JSON.parse(data);
               document.getElementById('test').innerHTML = city_json.list[1].temp.day-273.15;
@@ -273,47 +235,20 @@
                   magic();          //amikor már minden vacak betöltődött, akkor meghívjuk ezt a függvényt
               }
               console.log("frissult");
-
-
-
-
-                  //window.alert(city_json.list[1].temp.day);
-
-
-
               });
 
   }
 
-          $("#sending").submit(function(e)
-          {
-
-          //alert("valami");
-          });
+      /********************** CSS Változások figyelése**************************/
 
 
+      /********************** Chart inicializálása**************************/
 
-
-  function createchart(chartJSON, callback) {
+      function createchart(chartJSON, callback) {
   //	recent_city++
       chartdata = new google.visualization.DataTable();
       chartdata.addColumn('string', 'Day');
       chartdata.addColumn('number', 'Napi átlag C°');
-
-      /*     chartdata.addRows([
-          [1,  37.8 ],
-          [2,  30.9 ],
-          [3,  25.4 ],
-          [4,  11.7 ],
-          [5,  11.9 ],
-          [6,   8.8 ],
-          [7,   7.6 ],
-          [8,  12.3 ],
-          [9,  16.9 ],
-          [10, 12.8 ]
-
-      ]);*/
-
         options = {
           chart: {
             title: 'Hőmérséklet: '+ chartJSON.city.name,
@@ -327,15 +262,10 @@
 
 
       var rows = createArray (chartJSON);
-      //for (var i in chartJSON.list){
-          //for (var j=0; j<2; j++)
-          //rows.push([i+1, parseInt(chartJSON.list[i].temp.day)]);
 
-          //alert(rows);
       chartdata.addRows(rows);
 
       callback();
-
 
       }
 
@@ -391,28 +321,7 @@
 
       function drawChart() {
 
-
-   //     data.addColumn('number', 'The Avengers');
-   //     data.addColumn('number', 'Transformers: Age of Extinction');
-
-
-
-
-
-       /* var button = document.getElementById("kuld");
-        button.onclick = function ()
-        {
-            refreshing();
-          window.alert("clicked");
-
-       }*/
-
-        //chart.draw(data, options);
       }
-
-
-
-
 
       </script>
 
