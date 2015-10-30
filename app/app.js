@@ -137,7 +137,7 @@ io.sockets.on('connection', function (socket) {
 				
 		        // Print the json response
 			   JSONstring = JSON.stringify(body);
-			   console.log(JSONstring);
+			   //console.log(JSONstring);
 
 				socket.emit("buildchart", JSONstring);
 			}
@@ -153,7 +153,13 @@ io.sockets.on('connection', function (socket) {
 	
 		socket.on('dash', function(data){
 
-			dashboards[data.id].push(data.city);
+			var obj = {};
+			obj.cityname = data.cityname;
+			obj.elemid = data.elemid;
+			obj.top = data.top;
+			obj.left = data.left;
+
+			dashboards[data.id].push(obj);
 			console.log(dashboards[data.id].length)
 			
 			
@@ -161,7 +167,7 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on("positions", function(data){
 		for (i=0; i<data.length; i++){
-			if (dashboards[i] == data.cityname)
+			if (dashboards[i] == data.cityname){}
 		}
 	})
 

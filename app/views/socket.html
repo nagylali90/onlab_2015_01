@@ -175,6 +175,8 @@
       }
 
 
+
+
           function sleep(milliseconds) {
     var start = new Date().getTime();
     for (var i = 0; i < 1e7; i++) {
@@ -200,9 +202,23 @@
                   LastElement=addNewDataElement();
                   watch(LastElement.id);
               socket.emit("getcity", $("#city_list option:selected").text());
-              socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text(), });
+              socket.emit("dash", {
+                  id : dashboardid,
+                  cityname : $("#city_list option:selected").text(),
+                  elemid: LastElement.id,
+                  top: LastElement.style.top,
+                  left: LastElement.style.left
+              });
           });
           });
+
+      /*
+       id : dashboardid,
+       cityname : $("#city_list option:selected").text(),
+       elemid: LastElement.id,
+       top: LastElement.style.top,
+       left: LastElement.style.left
+      */
 
           var socket = io();
           socket.on('info', function (data) {
@@ -226,6 +242,11 @@
       function loadStoredElements(){
           //$('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
           LastElement=addNewDataElement();
+          if (LastElement.id == my_cities[recent_city].elemid) {
+              console.log(LastElement.style.top); // my_cities[recent_city].top;
+               LastElement.style.left = my_cities[recent_city].left;
+           }
+
           watch(LastElement.id);
           socket.emit("getcity", my_cities[recent_city]);
       }
