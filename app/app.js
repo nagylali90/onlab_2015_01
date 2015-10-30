@@ -159,6 +159,12 @@ io.sockets.on('connection', function (socket) {
 			
 			});
 
+	socket.on("positions", function(data){
+		for (i=0; i<data.length; i++){
+			if (dashboards[i] == data.cityname)
+		}
+	})
+
 	
 
 	

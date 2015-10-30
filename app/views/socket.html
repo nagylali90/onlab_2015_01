@@ -121,9 +121,11 @@
       var options;
       var chartdata;
       var charts_number;
-      var recent_city = 0;
+      var recent_city = 0;      //aktuális elemek száma
       var citycntr = 0;
-      var LastElement = 0;
+      var LastElement = 0;      //utolsóként hozzáadott elem
+      var cities = [];
+      var positionlist = [];
 
 
 
@@ -198,7 +200,7 @@
                   LastElement=addNewDataElement();
                   watch(LastElement.id);
               socket.emit("getcity", $("#city_list option:selected").text());
-              socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text()});
+              socket.emit("dash", {id : dashboardid, city : $("#city_list option:selected").text(), });
           });
           });
 
@@ -223,7 +225,8 @@
 
       function loadStoredElements(){
           //$('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
-          addNewDataElement();
+          LastElement=addNewDataElement();
+          watch(LastElement.id);
           socket.emit("getcity", my_cities[recent_city]);
       }
 
@@ -233,7 +236,7 @@
               var city_json=JSON.parse(data);
               document.getElementById('test').innerHTML = city_json.list[1].temp.day-273.15;
               createchart(city_json, function() { chart.draw(chartdata, options);});
-              console.log(city_json.city.name);
+              cities.push(city_json.city.name);
               if(recent_city<charts_number) {
                   loadStoredElements();
               }
@@ -246,6 +249,9 @@
   }
 
       /********************** CSS Változások figyelése**************************/
+
+      var moveTimeout = null;
+
       function watch(elem) {
           //console.log("watched");
           var el = $("#"+LastElement.id);
@@ -254,8 +260,27 @@
               callback: moveReaction
           });
 
+          function moveR(){
+              for (i=0; i<recent_city; i++){
+                  var tmp = document.getElementById('linechart_material_'+i );
+                  var o ={};
+                  o.elemid=tmp.id;
+                  o.cityname = cities[i];
+                  o.top = tmp.style.top;
+                  o.left = tmp.style.left;
+                  //var positionstring = tmp.id + ':'  + 'city:' + cities[i] + 'top:' + tmp.style.top + 'left' + tmp.style.left;
+                  positionlist.push(JSON.stringify(o));
+              }
+              console.log(positionlist);
+              socket.emit("positions", positionlist);
+
+          }
+
           function moveReaction() {
-              console.log("mozdult");
+              if (moveTimeout)
+                clearTimeout(moveTimeout);
+
+              moveTimeout=setTimeout(moveR,500);
           }
       }
 
