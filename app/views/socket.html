@@ -73,6 +73,8 @@
       .item.h2 { height:  80px; background: #0C9; }
       .item.h4 { height: 260px; background: #C90; }
       .item.w4 { width:  460px; background: #90C; }
+  	  .item.h6 { height: 390px; background: #C90; }
+      .item.w6 { width:  700px; background: #90C; }
 
 
       .item.is-dragging,
@@ -91,6 +93,20 @@
 
 
 
+  <div id="select_city">
+      Sending message:
+      <select id="city_list"> </select>
+      <input type="button" onclick="magic()" id="kuld" value="Kiválaszt!"></input>
+  </div>
+
+   <div id="select_size">
+      Méret:
+      <select id="sizes"> 
+		<option value="Small">Kicsi</option>
+		<option value="Medium" selected="selected">Közepes</option>
+		<option value="Large">Nagy</option>
+	  </select>
+  </div>
 
       <div>Holnapi hőmérséklet: <p id= "test" style="color:blue;font-weight:bold"></p></div>
 
@@ -104,12 +120,6 @@
 
 
 
-
-  <div id="select_city">
-      Sending message:
-      <select id="city_list"> </select>
-      <input type="button" onclick="magic()" id="kuld" value="Kiválaszt!"></input>
-  </div>
 
 
 
@@ -148,9 +158,19 @@
       };
 
       function getItemElement() {
-          var elem = document.createElement('div');
-          var widthClass = 'w4';
-          var heightClass = 'h4';
+        var elem = document.createElement('div');
+			if($("#sizes option:selected").text()=="Kicsi"){
+				var widthClass = 'w2';
+				var heightClass = 'h2';
+			}
+			else if($("#sizes option:selected").text()=="Közepes"){
+				var widthClass = 'w4';
+				var heightClass = 'h4';
+			}
+			else {
+				var widthClass = 'w6';
+				var heightClass = 'h6';
+			}
           var elemtype = "linechart";
           elem.id = "linechart_material_" + recent_city;
           elem.className = elemtype + ' ' + 'item ' + widthClass + ' ' + heightClass;
@@ -207,7 +227,9 @@
                   cityname : $("#city_list option:selected").text(),
                   elemid: LastElement.id,
                   top: LastElement.style.top,
-                  left: LastElement.style.left
+                  left: LastElement.style.left,
+				  //width: LastElement.childNodes[0].style.width,
+				  //height: LastElement.childNodes[0].style.height
               });
           });
           });
@@ -335,13 +357,25 @@
       chartdata = new google.visualization.DataTable();
       chartdata.addColumn('string', 'Day');
       chartdata.addColumn('number', 'Napi átlag C°');
+	   if($("#sizes option:selected").text()=="Kicsi"){
+          var widthClass = 'w4';
+          var heightClass = 'h4';
+		  }
+		  else if($("#sizes option:selected").text()=="Közepes"){
+          var widthClass = 'w4';
+          var heightClass = 'h4';
+		  }
+		  else {
+          var widthClass = 'w6';
+          var heightClass = 'h6';
+		  }
         options = {
           chart: {
             title: 'Hőmérséklet: '+ chartJSON.city.name,
             subtitle: 'Érték: (Celsius)'
           },
-          width: 460,
-          height: 260
+          width: widthClass,
+          height: heightClass
         };
       chart = new google.charts.Line(document.getElementById('linechart_material_'+recent_city ));
       recent_city++;

@@ -158,7 +158,8 @@ io.sockets.on('connection', function (socket) {
 			obj.elemid = data.elemid;
 			obj.top = data.top;
 			obj.left = data.left;
-			obj.wrapper_height  = 	0;
+			obj.wrapper_height  = 	0;			
+
 
 			dashboards[data.id].push(obj);
 			console.log(dashboards);
