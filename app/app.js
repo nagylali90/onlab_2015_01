@@ -159,11 +159,15 @@ io.sockets.on('connection', function (socket) {
 			obj.top = data.top;
 			obj.left = data.left;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			obj.wrapper_height  = 	0;			
 
 =======
 >>>>>>> parent of 9ddd730... store position
 
+=======
+
+>>>>>>> parent of 9ddd730... store position
 			dashboards[data.id].push(obj);
 			console.log(dashboards[data.id].length)
 			
