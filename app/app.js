@@ -57,7 +57,7 @@ app.get('/dash/:id', function (req, res) {
 		dashboards[req.params.id]=new Array();
 		choice=dashboards[req.params.id];
 	}
-	console.log(dashboards);
+	//console.log(dashboards);
 
 res.render("socket",{
 	dashboardid:req.params.id, mydashboard: JSON.stringify(choice)
@@ -158,18 +158,52 @@ io.sockets.on('connection', function (socket) {
 			obj.elemid = data.elemid;
 			obj.top = data.top;
 			obj.left = data.left;
+			obj.wrapper_height  = 	0;
 
 			dashboards[data.id].push(obj);
-			console.log(dashboards[data.id].length)
+			console.log(dashboards);
+			
+			//console.log(dashboards[data.id].length);
+
 			
 			
 			});
 
 	socket.on("positions", function(data){
-		for (i=0; i<data.length; i++){
-			if (dashboards[i] == data.cityname){}
+			
+			//console.log(data[0].id);
+			//console.log(data.length);
+			//console.log(dashboards[data.id].length);
+
+		
+
+		//console.log(pos.elemid); 
+		console.log("elemek:");
+		console.log(data);
+ 		for (i=0; i<dashboards[data[0].id].length; i++){
+			if(dashboards[data[0].id][i].elemid == data[i].elemid){
+				dashboards[data[0].id][i].top = data[i].top;
+				dashboards[data[0].id][i].left = data[i].left;
+				dashboards[data[0].id][i].wrapper_height = data[i].charts;
+				
+			}
+			
+		/*	if(dashboards[i][0] == data[0].id)
+			{
+				console.log("izeeeeeeeeeeeeeeee" + dashboards[i]);
+			}
+			*/
+			
+			
+				
+				//var pos = JSON.parse(data);
+				//console.log(pos[1].elemid);
+				
+					
+					
+			}
 		}
-	})
+	)
 
 	
 
