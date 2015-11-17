@@ -265,9 +265,7 @@
           //$('#charts').append($('<div/>', { id: 'linechart_material_' + recent_city, 'class' : 'linechart item w4 h4'}));
           LastElement=addNewDataElement();
           if (LastElement.id == my_cities[recent_city].elemid) {
-				LastElement.style.left = my_cities[recent_city].left; 
-				LastElement.style.top = my_cities[recent_city].top;
-              console.log(LastElement.style.left); // my_cities[recent_city].top;
+              console.log(LastElement.style.top); // my_cities[recent_city].top;
                LastElement.style.left = my_cities[recent_city].left;
            }
 
@@ -287,9 +285,6 @@
               }
               else{
                   magic();          //amikor már minden vacak betöltődött, akkor meghívjuk ezt a függvényt
-					setTimeout(modifyPositions, 500);
-					
-				
               }
               console.log("frissult");
               });
@@ -309,19 +304,17 @@
           });
 
           function moveR(){
-		  positionlist = [];
               for (i=0; i<recent_city; i++){
                   var tmp = document.getElementById('linechart_material_'+i );
                   var o ={};
-				  o.id = dashboardid;
                   o.elemid=tmp.id;
                   o.cityname = cities[i];
                   o.top = tmp.style.top;
                   o.left = tmp.style.left;
-				  o.charts = document.getElementById('charts').style.height;
-                  positionlist.push(o);
+                  //var positionstring = tmp.id + ':'  + 'city:' + cities[i] + 'top:' + tmp.style.top + 'left' + tmp.style.left;
+                  positionlist.push(JSON.stringify(o));
               }
-              console.log(JSON.stringify(positionlist));
+              console.log(positionlist);
               socket.emit("positions", positionlist);
 
           }
@@ -333,18 +326,6 @@
               moveTimeout=setTimeout(moveR,500);
           }
       }
-	  
-	  
-	  function modifyPositions(){
-		document.getElementById("charts").style.height = my_cities[0].wrapper_height;
-		for (i=0; i<my_cities.length; i++){
-			var current = document.getElementById(my_cities[i].elemid);
-			console.log(current.style.left);
-			current.style.top = my_cities[i].top;
-			current.style.left = my_cities[i].left;
-		}
-	  }
-	  
 
 
 
